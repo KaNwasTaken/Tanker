@@ -25,6 +25,8 @@ public class TankInput : MonoBehaviour
         tankTurret = transform.GetChild(0).GetComponent<TankTurret>();
         weaponSystem = transform.GetChild(0).GetComponent<TankWeaponSystem>();
 
+        playerInput.Player.FlipUp.performed += ctx => tankMotor.FlipUpTank();
+
         playerInput.Player.FirstTouch.performed += ctx => ProcessTouch(ctx, 0);
         fingerActions[0] = playerInput.Player.FirstTouch;
 
@@ -36,6 +38,7 @@ public class TankInput : MonoBehaviour
         playerInput.Player.Movement.Enable();
         playerInput.Player.FirstTouch.Enable();
         playerInput.Player.SecondTouch.Enable();
+        playerInput.Player.FlipUp.Enable();
     }
 
     public void ProcessTouch(InputAction.CallbackContext ctx, int touchId)

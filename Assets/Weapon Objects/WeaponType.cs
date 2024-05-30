@@ -7,5 +7,8 @@ public class WeaponType : ScriptableObject
 {
     public string weaponName;
     public float timeBetweenShots;
+    public float projectileLifetime;
+    public float projectileSpeed;
+    public int contactDamage;
     public GameObject projectilePrefab;
 }

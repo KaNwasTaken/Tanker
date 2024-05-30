@@ -12,7 +12,7 @@ public class TankTurret : MonoBehaviour
 {
     public Camera cam;
 
-
+    [SerializeField] int minimumRotationAngle = 3;
     public bool isRotating = false;
 
     [SerializeField] Canvas HUDCanvas;
@@ -43,15 +43,17 @@ public class TankTurret : MonoBehaviour
     IEnumerator RotationCoroutine(InputAction.CallbackContext ctx)
     {
         Quaternion currentRotation = ScreenpointToRotation(ctx.ReadValue<Vector2>());
+        
         float ratio = 0f;
-
-        while (ratio < 0.3)
+        while (Quaternion.Angle(transform.rotation, currentRotation) > minimumRotationAngle)
         {
+
             if (ctx.action.IsInProgress())
             {
                 currentRotation = ScreenpointToRotation(ctx.ReadValue<Vector2>());
             }
             transform.rotation = Quaternion.Slerp(transform.rotation, currentRotation, ratio);
+
             ratio += 0.01f;
             yield return null;
         }
@@ -63,6 +65,7 @@ public class TankTurret : MonoBehaviour
     private Quaternion ScreenpointToRotation(Vector3 screenPoint)
     {
         Ray screenRay = cam.ScreenPointToRay(screenPoint);
+        //LayerMask mask = LayerMask.GetMask("Ground");
         Physics.Raycast(screenRay, out RaycastHit hitInfo);
         Vector3 worldPoint = hitInfo.point;
         Quaternion lookRot = Quaternion.LookRotation(worldPoint - transform.position);

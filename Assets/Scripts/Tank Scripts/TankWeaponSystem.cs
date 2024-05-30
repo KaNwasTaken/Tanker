@@ -7,19 +7,26 @@ using UnityEngine.InputSystem;
 public class TankWeaponSystem : MonoBehaviour
 {
     public List<WeaponType> availableWeapons;
-    WeaponType currentWeapon;
+    public WeaponType currentWeapon;
+    TankShellPool tankShellPool;
 
     [SerializeField] Transform shellPoint;
     InputAction.CallbackContext latestValidTouch;
     int currentFingerId;
 
-    TankTurret turret;
+    //public delegate void WeaponSystemEvents();
+    //public event WeaponSystemEvents WeaponFired;
 
+    TankTurret turret;
     Camera activeCamera;
 
     bool isReloading;
+    [SerializeField] ParticleSystem muzzleParticleSystem;
+
     private void Start()
     {
+        tankShellPool = TankShellPool.Instance;
+
         if (currentWeapon == null && availableWeapons[0] != null)
         {
             UpdateWeapon(availableWeapons[0]);
@@ -31,6 +38,8 @@ public class TankWeaponSystem : MonoBehaviour
     {
         activeCamera = Camera.main;
         currentWeapon = weapon;
+        tankShellPool.shellPool.Clear();
+        tankShellPool.AddToPool(weapon.projectilePrefab, 10);
     }
 
     private void Update()
@@ -61,20 +70,25 @@ public class TankWeaponSystem : MonoBehaviour
 
     public void Fire(InputAction.CallbackContext ctx)
     {
-        if (!isReloading)
-        {
-            StartCoroutine(ReloadCooldownCoroutine());
-            GameObject projectile = Instantiate(currentWeapon.projectilePrefab, shellPoint.position, Quaternion.identity);
-            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        if (isReloading) return;
 
-            Ray ray = activeCamera.ScreenPointToRay(ctx.ReadValue<Vector2>());
-            Physics.Raycast(ray, out RaycastHit hitInfo);
-            Vector3 worldPoint = new Vector3(hitInfo.point.x, shellPoint.position.y, hitInfo.point.z);
+        StartCoroutine(ReloadCooldownCoroutine());
+        GameObject projectile = tankShellPool.TakeFromPool(shellPoint.position, Quaternion.identity);
 
-            projectile.transform.rotation = Quaternion.LookRotation(worldPoint - transform.position);
-            rb.AddForce((worldPoint - shellPoint.position).normalized * 5000);
-        }
+        // In case pool is empty, return
+        if (projectile == null) return;
 
+        Ray ray = activeCamera.ScreenPointToRay(ctx.ReadValue<Vector2>());
+        Physics.Raycast(ray, out RaycastHit hitInfo);
+        Vector3 worldPoint = new Vector3(hitInfo.point.x, shellPoint.position.y, hitInfo.point.z);
+
+        Quaternion lookRot =  Quaternion.LookRotation(worldPoint - transform.position);
+        lookRot = Quaternion.Euler(0, lookRot.eulerAngles.y, 0);
+        projectile.transform.rotation = lookRot;
+
+        projectile.GetComponent<Projectile>().Initialized();
+        muzzleParticleSystem.Play();
+        projectile.GetComponent<Rigidbody>().AddForce((worldPoint - transform.position).normalized * currentWeapon.projectileSpeed);
     }
 
     IEnumerator ReloadCooldownCoroutine()

@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class TankMotor : MonoBehaviour
 {
-    public int speed;
-    public int rotationSpeed;
-    public float movementSmoothTime;
-    public float rotationSmoothTime;
-    public float maxVelocity;
+    public int speed = 20;
+    public int rotationSpeed = 50;
+    public float movementSmoothTime = 0.2f;
+    public float rotationSmoothTime = 0.2f;
+    public float maxVelocity = 20;
 
     Vector3 currentVelocity;
     Vector3 currentMovement;
@@ -18,6 +19,7 @@ public class TankMotor : MonoBehaviour
     Rigidbody tankRigidbody;
     bool isGrounded;
 
+    [SerializeField] GameObject flipButton;
 
     private void Start()
     {
@@ -27,6 +29,10 @@ public class TankMotor : MonoBehaviour
 
     private void Update()
     {
+
+        flipButton.SetActive(transform.up.y < -0.8f);
+       
+
         Physics.Raycast(transform.position, new Vector3(0, -1, 0), out RaycastHit hitInfo);
         if (Vector3.Magnitude(hitInfo.point - transform.position) < 5)
         {
@@ -51,4 +57,8 @@ public class TankMotor : MonoBehaviour
         transform.rotation = transform.rotation * Quaternion.Euler(0, currentRotation.x * rotationSpeed * Time.deltaTime, 0);
     }
 
+    public void FlipUpTank()
+    {
+        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+    }
 }

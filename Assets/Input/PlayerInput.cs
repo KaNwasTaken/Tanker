@@ -53,6 +53,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Flip Up"",
+                    ""type"": ""Button"",
+                    ""id"": ""b84f0fe1-59ea-45b8-b993-638a2a7e632b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -264,6 +273,17 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""Second Touch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a437d8b4-a5b6-4aa0-aa63-41246f13750b"",
+                    ""path"": ""<Keyboard>/v"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Flip Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -275,6 +295,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         m_Player_FirstTouch = m_Player.FindAction("First Touch", throwIfNotFound: true);
         m_Player_SecondTouch = m_Player.FindAction("Second Touch", throwIfNotFound: true);
+        m_Player_FlipUp = m_Player.FindAction("Flip Up", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -339,6 +360,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_FirstTouch;
     private readonly InputAction m_Player_SecondTouch;
+    private readonly InputAction m_Player_FlipUp;
     public struct PlayerActions
     {
         private @PlayerInput m_Wrapper;
@@ -346,6 +368,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @FirstTouch => m_Wrapper.m_Player_FirstTouch;
         public InputAction @SecondTouch => m_Wrapper.m_Player_SecondTouch;
+        public InputAction @FlipUp => m_Wrapper.m_Player_FlipUp;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -364,6 +387,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @SecondTouch.started += instance.OnSecondTouch;
             @SecondTouch.performed += instance.OnSecondTouch;
             @SecondTouch.canceled += instance.OnSecondTouch;
+            @FlipUp.started += instance.OnFlipUp;
+            @FlipUp.performed += instance.OnFlipUp;
+            @FlipUp.canceled += instance.OnFlipUp;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -377,6 +403,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @SecondTouch.started -= instance.OnSecondTouch;
             @SecondTouch.performed -= instance.OnSecondTouch;
             @SecondTouch.canceled -= instance.OnSecondTouch;
+            @FlipUp.started -= instance.OnFlipUp;
+            @FlipUp.performed -= instance.OnFlipUp;
+            @FlipUp.canceled -= instance.OnFlipUp;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -399,5 +428,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnFirstTouch(InputAction.CallbackContext context);
         void OnSecondTouch(InputAction.CallbackContext context);
+        void OnFlipUp(InputAction.CallbackContext context);
     }
 }
