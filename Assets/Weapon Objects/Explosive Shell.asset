@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad24cf72670f51f4b8264fd4d0e696ed, type: 3}
-  m_Name: Basic Shell
+  m_Name: Explosive Shell
   m_EditorClassIdentifier: 
-  weaponName: Shell
-  timeBetweenShots: 1
+  weaponName: 
+  timeBetweenShots: 2
   projectileLifetime: 3
-  projectileSpeed: 3000
-  contactDamage: 80
-  projectilePrefab: {fileID: 5056856181198137367, guid: d5f33feaecd37244fa472dcb6850186c,
+  projectileSpeed: 2000
+  contactDamage: 160
+  projectilePrefab: {fileID: 5212618513555623058, guid: 0d105cfe74169a74c9d5dfa8182763f9,
     type: 3}
-  weaponSprite: {fileID: 21300000, guid: b3b2ea4d4391195408826d249407d315, type: 3}
+  weaponSprite: {fileID: 21300000, guid: 9b958ca63ad83ed48af7d84dfa689352, type: 3}

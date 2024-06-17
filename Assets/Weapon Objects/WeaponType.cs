@@ -11,4 +11,5 @@ public class WeaponType : ScriptableObject
     public float projectileSpeed;
     public int contactDamage;
     public GameObject projectilePrefab;
+    public Sprite weaponSprite;
 }

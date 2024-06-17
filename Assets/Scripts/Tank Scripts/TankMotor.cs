@@ -11,7 +11,7 @@ public class TankMotor : MonoBehaviour
     public float rotationSmoothTime = 0.2f;
     public float maxVelocity = 20;
 
-    Vector3 currentVelocity;
+    public Vector3 currentVelocity;
     Vector3 currentMovement;
     Vector2 currentRotation;
     Vector2 currentRotationVelocity;
